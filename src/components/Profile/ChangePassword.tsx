@@ -57,7 +57,7 @@ const ChangePassword = ({close}: Props) => {
 
             </label>
             <button onClick={handleClickSave}>Save</button>
-            <button onClick={()=>close()}>Close</button>
+            <button onClick={close}>Close</button>
             <button onClick={handleClickClear}>Clear</button>
 
         </div>

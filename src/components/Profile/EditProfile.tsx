@@ -14,6 +14,7 @@ const EditProfile = ({close}:Props) => {
     const handleClickSave=()=>{
       // TODO save edited profile and close component
       alert('Profile saved');
+      close();
     }
 
 
@@ -34,7 +35,7 @@ const EditProfile = ({close}:Props) => {
                 />
             </label>
         <button onClick={handleClickSave}>Save and Close</button>
-        <button onClick={()=>close()} >Close without Save</button>
+        <button onClick={close} >Close without Save</button>
         <button onClick={handleClickClear} >Clear</button>
 
         </>
