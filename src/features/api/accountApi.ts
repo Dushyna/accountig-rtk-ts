@@ -56,9 +56,9 @@ export   type UserUpdate = Omit<UserData, 'login'>;
 
 
 export const updateUser = createAsyncThunk<UserProfile, UserUpdate, { state: RootState }>(
-    'user/updateUser',
+    'user/update',
     async (user, {getState}) => {
-        const response = await fetch(`${base_url}/account/user`, {
+        const response = await fetch(`${base_url}/account/user/${getState().user.login}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
@@ -77,13 +77,13 @@ export const updateUser = createAsyncThunk<UserProfile, UserUpdate, { state: Roo
     }
 )
 
-export const changePassword = createAsyncThunk<string, string, { state: RootState }>(
+export const changePassword = createAsyncThunk<string, { newPassword:string, oldPassword:string }, { state: RootState }>(
     'user/Password',
-    async (newPassword: string,{getState}) => {
+    async ({newPassword,oldPassword},{getState}) => {
         const response = await fetch(`${base_url}/account/password`, {
             method: 'PATCH',
             headers: {
-                Authorization: getState().token,
+                Authorization: createToken(getState().user.login, oldPassword),
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({password: newPassword})

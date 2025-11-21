@@ -9,20 +9,24 @@ const userSlice = createSlice({
     initialState,
     reducers: {
         setUser: (_state, action: PayloadAction<UserProfile>) => action.payload,
-        clearUser: () => {
-        },
+        clearUser: () => initialState,
         changeFirstName: (state, action: PayloadAction<string>) => {
             state.firstName = action.payload;
         },
         changeLastName: (state, action: PayloadAction<string>) => {
             state.lastName = action.payload;
-        }},
-        extraReducers: builder => {
-            builder
-                .addCase(registerUser.fulfilled, (_state, action) => action.payload.user)
-                .addCase(fetchUser.fulfilled, (_state, action) => action.payload.user)
-                .addCase(updateUser.fulfilled, (_state, action) => action.payload)
         }
+    },
+    extraReducers: builder => {
+        builder
+            .addCase(registerUser.fulfilled, (_state, action) => action.payload.user)
+            .addCase(fetchUser.fulfilled, (_state, action) => action.payload.user)
+            .addCase(updateUser.fulfilled, (state, action) => {
+                state.firstName = action.payload.firstName;
+                state.lastName = action.payload.lastName;
+
+            })
+    }
 
 })
 export default userSlice.reducer;

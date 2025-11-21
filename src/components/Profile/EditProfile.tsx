@@ -1,20 +1,24 @@
 import {useState} from "react";
+import {useAppDispatch} from "../../app/hooks.ts";
+import {updateUser} from "../../features/api/accountApi.ts";
+
 interface Props {
     close: () => void;
 }
 
-const EditProfile = ({close}:Props) => {
-    const [firstName, setFirstName] = useState<string>('');
-    const [lastName, setLastName] = useState<string>('');
+const EditProfile = ({close}: Props) => {
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
 
-    const handleClickClear=()=>{
-      setFirstName('');
-      setLastName('');
+    const dispatch = useAppDispatch();
+
+    const handleClickClear = () => {
+        setFirstName('');
+        setLastName('');
     }
-    const handleClickSave=()=>{
-      // TODO save edited profile and close component
-      alert('Profile saved');
-      close();
+    const handleClickSave = () => {
+        dispatch(updateUser({firstName, lastName}));
+        close();
     }
 
 
@@ -34,9 +38,9 @@ const EditProfile = ({close}:Props) => {
                     onChange={(e) => setLastName(e.target.value)}
                 />
             </label>
-        <button onClick={handleClickSave}>Save and Close</button>
-        <button onClick={close} >Close without Save</button>
-        <button onClick={handleClickClear} >Clear</button>
+            <button onClick={handleClickSave}>Save and Close</button>
+            <button onClick={close}>Close without Save</button>
+            <button onClick={handleClickClear}>Clear</button>
 
         </>
     );
