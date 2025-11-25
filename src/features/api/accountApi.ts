@@ -1,20 +1,35 @@
 import {base_url} from "../../utils/constants.ts";
 import type {UserData, UserProfile, UserRegister} from "../../utils/type";
 import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
+import type {RootState} from "../../app/store.ts";
+
+const authEndpoints=['updateUser'];
 
 export const accountApi = createApi({
     reducerPath: "accountApi",
     tagTypes: ['profile'],
-    baseQuery: fetchBaseQuery({baseUrl: base_url}),
+    baseQuery: fetchBaseQuery({
+        baseUrl: base_url,
+        prepareHeaders: (headers, {getState,endpoint}) => {
+            if (authEndpoints.includes(endpoint) ) {
+                const token=(getState() as RootState).token
+                headers.set("Authorization", token);
+
+            }
+            return headers;
+        }
+
+
+    }),
     endpoints: builder => ({
-        registerUser: builder.mutation<UserProfile,UserRegister>({
+        registerUser: builder.mutation<UserProfile, UserRegister>({
             query: user => ({
                 url: '/account/register',
                 method: 'POST',
                 body: user
             }),
         }),
-        fetchUser: builder.query<UserProfile,string>({
+        fetchUser: builder.query<UserProfile, string>({
             query: token => ({
                 url: '/account/login',
                 method: 'POST',
@@ -22,22 +37,19 @@ export const accountApi = createApi({
                     Authorization: token
                 }
             }),
-            providesTags:['profile']
+            providesTags: ['profile']
         }),
 
-        updateUser: builder.mutation<UserProfile,{login:string, token:string,userData: Omit<UserData,'login'>}>({
-            query: ({userData, login, token}) => ({
+        updateUser: builder.mutation<UserProfile, { login: string, userData: Omit<UserData, 'login'> }>({
+            query: ({userData, login}) => ({
                 url: `/account/user/${login}`,
                 method: 'PATCH',
                 body: userData,
-                headers: {
-                    Authorization: token
-                }
             }),
-            invalidatesTags:['profile']
+            invalidatesTags: ['profile']
         }),
 
-        changePassword: builder.mutation<void,{newPassword:string, token:string}>({
+        changePassword: builder.mutation<void, { newPassword: string, token: string }>({
             query: ({newPassword, token}) => ({
                 url: `/account/password`,
                 method: 'PATCH',
@@ -55,8 +67,13 @@ export const accountApi = createApi({
 
 })
 
-export const { useLazyFetchUserQuery, useRegisterUserMutation, useFetchUserQuery, useChangePasswordMutation, useUpdateUserMutation} = accountApi;
-
+export const {
+    useLazyFetchUserQuery,
+    useRegisterUserMutation,
+    useFetchUserQuery,
+    useChangePasswordMutation,
+    useUpdateUserMutation
+} = accountApi;
 
 
 // export const registerUser = createAsyncThunk(
