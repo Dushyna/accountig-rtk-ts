@@ -1,15 +1,13 @@
 import ProfileDate from "./ProfileDate.tsx";
 import UpdateUser from "./UpdateUser.tsx";
-import {useDispatch} from "react-redux";
 import {clearToken} from "../../features/token/tokenSlice.ts";
-import {clearUser} from "../../features/user/userSlice.ts";
+import {useAppDispatch} from "../../app/hooks.ts";
 
 const Profile = () => {
-const dispatch = useDispatch();
-  const handleClickLogout = () => {
-dispatch(clearToken());
-dispatch(clearUser());
-  }
+    const dispatch = useAppDispatch();
+    const handleClickLogout = () => {
+        dispatch(clearToken());
+    }
 
 
     return (

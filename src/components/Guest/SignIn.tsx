@@ -1,16 +1,28 @@
 import {useState} from "react";
-import {fetchUser} from "../../features/api/accountApi.ts";
+import {useLazyFetchUserQuery} from "../../features/api/accountApi.ts";
 import {createToken} from "../../utils/constants.ts";
 import {useAppDispatch} from "../../app/hooks.ts";
+import {setToken} from "../../features/token/tokenSlice.ts";
 
 const SignIn = () => {
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
-    const dispatch=useAppDispatch();
+    const dispatch = useAppDispatch();
+    const [fetchUser] = useLazyFetchUserQuery()
 
+    const handleClickSignIn = async () => {
+        const token = createToken(login, password);
+        try {
+            const {error} = await fetchUser(token);
+            if (error) {
+                throw error;
+            }
 
-    const handleClickSignIn = () => {
-        dispatch(fetchUser(createToken(login,password)));
+            dispatch(setToken(token));
+        } catch (err) {
+            console.log(err);
+        }
+
     }
     const handleClickClear = () => {
         setLogin('');
